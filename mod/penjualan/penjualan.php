@@ -352,7 +352,8 @@
 						<th>BARANG</th>
 						<th>HARGA</th>
 						<th>DISC.</th>
-						<th colspan='2'>SUB TOTAL</th>
+						<th>SUB TOTAL</th>
+						<th>#</th>
 					</tr>
 					</thead>
 
@@ -367,6 +368,7 @@
 				$no = 1;
 				while($p = mysql_fetch_assoc($sql))
 				{
+					$no_trans_jual = $p['no_transaksi']; 
 					$harga_disc = $p['harga'] - (($p['harga'] * $p['disc']) / 100);
 					$sub_total = $harga_disc * $p['qty'];
 
@@ -378,6 +380,9 @@
 						<td>Rp. ".number_format($p['harga'],0)." X $p[qty] $p[satuan]</td>
 						<td>".number_format($p['disc'],0)."%</td>
 						<td>Rp. ".number_format($sub_total)."</td>
+						<td><a href='med.php?mod=penjualan&act=edit_form_jual&nt=$no_trans_jual&kd=$p[kode_barang]'><i class='fa fa-pencil-square w3-large w3-text-blue'></i></a>
+						<a href='$aksi?mod=penjualan&act=hapus_unit_jual&nt=$no_trans_jual&kd=$p[kode_barang]' onclick=\"return confirm('Yakin hapus data');\"><i class='fa fa-trash w3-large w3-text-red'></i></a>
+						</td>
 					</tr>";
 
 					$no++;
@@ -413,10 +418,126 @@
 				<p>
 					<button class='w3-btn w3-tiny' onclick=\"window.history.back()\"><i class='fa fa-mail-reply-all'></i> Back</button>
 					<a href='med.php?mod=penjualan' class='w3-btn w3-red w3-tiny'><i class='fa fa-cart-plus'></i> Transaksi Baru</a>
+					<a href='med.php?mod=penjualan&act=edit_tambah_data_jual&id=$_GET[id]' class='w3-btn w3-blue w3-tiny'><i class='fa fa-edit'></i> Tambah Unit Jual</a>
 					<a href='popup/popup.php?mod=cetakkwitansi&id=$_GET[id]' class='w3-btn w3-dark-grey w3-tiny' target='_blank'><i class='fa fa-print'></i> Cetak Kwitansi</a>
 				</p>";
 
 			}
+		break;
+
+		case 'edit_form_jual':
+
+			echo"<div class='w3-container w3-small w3-pale-green w3-leftbar w3-border-green'>
+				<h4 style='margin-bottom:0;padding-bottom:0;'>Form Edit Penjualan</h4>
+				<p style='margin-top:0;padding-top:0;'><i>Form Edit Item Penjualan</i></p>
+			</div>";
+
+				$sql = mysql_query("SELECT a.*
+									FROM tb_detail_penjualan a 
+									WHERE a.no_transaksi = '$_GET[nt]' AND a.kode_barang = '$_GET[kd]'") or die(mysql_error());
+				$p = mysql_fetch_assoc($sql);
+			echo"<form class='w3-small' method='POST' action='$aksi?mod=servis&act=edit_penjualan'>
+				
+				<input type='hidden' name='no_transaksi' class='w3-input' value='$p[no_transaksi]'>
+				<table>
+				
+
+				<tr>
+						<td width='220px'><label class='w3-label'>Nama Barang :</label></td>
+						<td width='10px'>:</td>
+						<td><input type='text' name='kode_barang' id='kode_barang' class='w3-input' placeholder='ketik Nama Barang ...' >
+						</td>
+					</tr>
+					
+					<tr>
+						<td><label class='w3-label'>HARGA</label></td>
+						<td>:</td>
+						<td><input type='text' name='harga' class='w3-input' id='harga' value='$p[harga]'>
+						</td>
+					</tr>
+					<tr>
+						<td><label class='w3-label'>DISC</label></td>
+						<td>:</td>
+						<td><input type='text' name='disc' class='w3-input' value='$p[disc]'>
+						</td>
+					</tr>
+					<tr>
+						<td><label class='w3-label'>QTY</label></td>
+						<td>:</td>
+						<td><input type='text' name='qty' class='w3-input' value='$p[qty]'>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td align='right'><button type='submit' name='submit' value='simpan' class='w3-btn'><i class='fa fa-save'></i> Simpan Data</button>&nbsp;
+
+						<button type='button' class='w3-btn w3-orange' onclick='history.back()'><i class='fa fa-rotate-left'></i> Kembali</button></td>
+					</tr>
+				</table>
+					
+
+			</form>";
+			?>
+				<script type="text/javascript">
+					$(function()
+					{
+						$(".dp").datepicker({
+							dateFormat : "yy-mm-dd",
+							showAnim : "fold"
+						});
+					});
+				</script>
+			<?php
+		break;
+
+		case 'editdatajual':
+
+			echo"<div class='w3-container w3-small w3-pale-green w3-leftbar w3-border-green'>
+				<h4 style='margin-bottom:0;padding-bottom:0;'>Form Edit Penjualan</h4>
+				<p style='margin-top:0;padding-top:0;'><i>Form Edit Item Penjualan</i></p>
+			</div>";
+
+				$sql = mysql_query("SELECT *
+									FROM tb_penjualan 
+									WHERE no_transaksi = '$_GET[id]'") or die(mysql_error());
+				$p = mysql_fetch_assoc($sql);
+			echo"<form class='w3-small' method='POST' action='$aksi?mod=penjualan&act=edit_data_jual'>
+				
+				<input type='hidden' name='no_transaksi' class='w3-input' value='$p[no_transaksi]'>
+				<table>
+					<tr>
+						<td width='220px'><label class='w3-label'>Nama Pelanggan :</label></td>
+						<td width='10px'>:</td>
+						<td><input type='text' name='nama' id='nama' class='w3-input' placeholder='ketik Nama Pelanggan ...' >
+						</td>
+					</tr>
+
+					
+					
+					<tr>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td align='right'><button type='submit' name='submit' value='simpan' class='w3-btn'><i class='fa fa-save'></i> Simpan Data</button>&nbsp;
+
+						<button type='button' class='w3-btn w3-orange' onclick='history.back()'><i class='fa fa-rotate-left'></i> Kembali</button></td>
+					</tr>
+				</table>
+					
+
+			</form>";
+			?>
+				<script type="text/javascript">
+					$(function()
+					{
+						$(".dp").datepicker({
+							dateFormat : "yy-mm-dd",
+							showAnim : "fold"
+						});
+					});
+				</script>
+			<?php
 		break;
 
 
@@ -454,7 +575,9 @@
 							</div>
 						</form>
 					</td>
-					<td align='right'><a href='med.php?mod=penjualan&act=list' class='w3-btn w3-dark-grey w3-small'><i class='fa fa-refresh'></i> Refresh</a>
+					<td align='right'>
+					<td>
+					<a href='med.php?mod=penjualan&act=list' class='w3-btn w3-dark-grey w3-small'><i class='fa fa-refresh'></i> Refresh</a>
 					</td>
 				</tr>
 				
@@ -524,7 +647,9 @@
 							<td>".total_penjualan($m['no_transaksi'])."</td>
 							<td>Rp. ".number_format($m['potongan'])."</td>
 							<td>$m[status]</td>
-							<td><a href='$aksi?mod=penjualan&act=hapus&id=$m[no_transaksi]' onclick=\"return confirm('Pastikan anda sudah mereturn barang. Yakin hapus data ?');\"><i class='fa fa-trash w3-large w3-text-red'></i></a>
+							<td>
+							<a href='med.php?mod=penjualan&act=editdatajual&id=$m[no_transaksi]'><i class='fa fa-pencil-square w3-large w3-text-blue'></i></a> 
+							<a href='$aksi?mod=penjualan&act=hapus&id=$m[no_transaksi]' onclick=\"return confirm('Pastikan anda sudah mereturn barang. Yakin hapus data ?');\"><i class='fa fa-trash w3-large w3-text-red'></i></a>
 							</td>
 						
 						</tr>";
@@ -635,5 +760,27 @@
 	    		console.log(ui.item.label);
 	    	}
 	    });
+
+		<?php
+			$sqlTags = mysql_query("SELECT * FROM tb_barang 
+								ORDER BY kode_barang ASC") or die(mysql_error());
+
+			$tags = array();
+			while($t = mysql_fetch_assoc($sqlTags))
+			{
+				$tags[] = '{label : "'.$t['nama_barang'].'", value : "'.$t['kode_barang'].'"}';
+			}
+		?>
+		var availableTags = [<?php echo implode(", \n\t\t\t", $tags); ?>];
+	    $( "#kode_barang" ).autocomplete({
+	    	source: availableTags,
+	    	select:function(event, ui) {
+	    		$("#harga").focus();
+	    		console.log(ui.item.label);
+	    	}
+	    });
+
+
+		
 	});
 </script>

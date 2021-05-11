@@ -227,6 +227,33 @@
 		}
 	}
 
+	elseif ($mod == "penjualan" AND $act == "edit_data_jual") { 
+	    
+	
+		$qpel = mysql_query("SELECT * FROM tb_pelanggan 
+							WHERE kode_pelanggan = '".anti_inject($_POST['nama'])."'");
+
+		if(mysql_num_rows($qpel) > 0)
+		{
+			$p = mysql_fetch_assoc($qpel);
+			$kode_pel = $p['kode_pelanggan'];
+			$nama_pelanggan = anti_inject($p['nama_pelanggan']);
+		}
+		else
+		{
+			$kode_pel = "";
+			$nama_pelanggan = anti_inject($_POST['nama']);
+		}
+	
+	mysql_query("UPDATE tb_penjualan SET kode_pelanggan = '$kode_pel',
+				nama_pelanggan = '$nama_pelanggan'
+				WHERE no_transaksi = '$_POST[no_transaksi]'") or die(mysql_error());
+
+	echo"<script>
+		window.history.back();
+	</script>";	
+	}
+
 	elseif ($mod == "penjualan" AND $act == "hapus") {
 		if(isset($_SESSION['hapuspenjualan']) AND $_SESSION['hapuspenjualan'] <> 'TRUE')
 		{
