@@ -272,6 +272,59 @@
 			
 	}
 
+	elseif($mod == "penjualan" AND $act == "update_tambah_data_jual"){
+
+		$query = mysql_query("SELECT * FROM tb_barang WHERE kode_barang='$_POST[kode_barang]'");
+		$data = mysql_fetch_array($query);
+		$harga_jual = $data['harga_jual']; 
+		
+				mysql_query("INSERT INTO tb_detail_penjualan (no_transaksi,
+															  kode_barang,
+																	harga,
+																	disc,
+																	qty,
+																	petugas,
+																	timestmp)
+															VALUES('$_POST[no_transaksi]',
+																	'$_POST[kode_barang]',
+																	'$harga_jual',
+																	'$_POST[disc]',
+																	'$_POST[qty]',
+																	'$_SESSION[login_id]',
+																	NOW())") or die(mysql_error());
+
+		echo"<script type='text/JavaScript'>
+		location.replace('../../med.php?mod=penjualan&act=printout&id=".$_POST['no_transaksi']."');
+		</script>";
+
+
+	}
+
+	elseif ($mod == "penjualan" AND $act == "update_unit_data_jual") {
+
+		mysql_query("UPDATE tb_detail_penjualan SET harga = '$_POST[harga]',
+													disc = '$_POST[disc]',
+													qty = '$_POST[qty]'
+				WHERE no_transaksi = '$_POST[no_transaksi]' AND kode_barang='$_POST[kode_barang]'") or die(mysql_error());
+
+
+		flash('example_message', '<p>Berhasil menghapus data transaksi.</p>' );
+		echo"<script type='text/JavaScript'>
+		location.replace('../../med.php?mod=penjualan&act=printout&id=".$_POST['no_transaksi']."');
+		</script>";
+		
+	}
+
+	elseif ($mod == "penjualan" AND $act == "hapus_unit_jual") {
+
+		mysql_query("DELETE FROM tb_detail_penjualan WHERE no_transaksi = '$_GET[nt]' AND kode_barang='$_GET[kd]'") or die(mysql_error());
+		flash('example_message', '<p>Berhasil menghapus data transaksi.</p>' );
+		echo"<script type='text/JavaScript'>
+		location.replace('../../med.php?mod=penjualan&act=printout&id=".$_GET['nt']."');
+		</script>";
+		
+	}
+
 
 
 ?>

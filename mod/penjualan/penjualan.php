@@ -17,6 +17,7 @@
 	}
 
 	$aksi = 'mod/penjualan/act_penjualan.php';
+	
 
 	switch ($act) {
 		default:
@@ -418,7 +419,7 @@
 				<p>
 					<button class='w3-btn w3-tiny' onclick=\"window.history.back()\"><i class='fa fa-mail-reply-all'></i> Back</button>
 					<a href='med.php?mod=penjualan' class='w3-btn w3-red w3-tiny'><i class='fa fa-cart-plus'></i> Transaksi Baru</a>
-					<a href='med.php?mod=penjualan&act=edit_tambah_data_jual&id=$_GET[id]' class='w3-btn w3-blue w3-tiny'><i class='fa fa-edit'></i> Tambah Unit Jual</a>
+					<a href='med.php?mod=penjualan&act=edit_tambah_data_jual&nt=$_GET[id]' class='w3-btn w3-blue w3-tiny'><i class='fa fa-edit'></i> Tambah Unit Jual</a>
 					<a href='popup/popup.php?mod=cetakkwitansi&id=$_GET[id]' class='w3-btn w3-dark-grey w3-tiny' target='_blank'><i class='fa fa-print'></i> Cetak Kwitansi</a>
 				</p>";
 
@@ -436,27 +437,39 @@
 									FROM tb_detail_penjualan a 
 									WHERE a.no_transaksi = '$_GET[nt]' AND a.kode_barang = '$_GET[kd]'") or die(mysql_error());
 				$p = mysql_fetch_assoc($sql);
-			echo"<form class='w3-small' method='POST' action='$aksi?mod=servis&act=edit_penjualan'>
+
+				$query_barang = mysql_query("SELECT * FROM tb_barang WHERE kode_barang='$p[kode_barang]'");
+				$data_barang = mysql_fetch_array($query_barang);
+				$nama_barang = $data_barang['harga_jual']; 
+			echo"<form class='w3-small' method='POST' action='$aksi?mod=penjualan&act=update_unit_data_jual'>
 				
 				<input type='hidden' name='no_transaksi' class='w3-input' value='$p[no_transaksi]'>
 				<table>
 				
 
-				<tr>
+					<tr>
+						<td width='220px'><label class='w3-label'>Kode Barang :</label></td>
+						<td width='10px'>:</td>
+						<td><input type='text' name='kode_barang' class='w3-input' value='$p[kode_barang]' readonly>
+						</td>
+					</tr>
+
+					<tr>
 						<td width='220px'><label class='w3-label'>Nama Barang :</label></td>
 						<td width='10px'>:</td>
-						<td><input type='text' name='kode_barang' id='kode_barang' class='w3-input' placeholder='ketik Nama Barang ...' >
+						<td><input type='text' name='nama_barang' class='w3-input' value='$data_barang[nama_barang]' readonly>
+						</td>
+					</tr>
+
+					<tr>
+						<td width='220px'><label class='w3-label'>Harga Barang :</label></td>
+						<td width='10px'>:</td>
+						<td><input type='text' name='harga' class='w3-input' value='$p[harga]'>
 						</td>
 					</tr>
 					
 					<tr>
-						<td><label class='w3-label'>HARGA</label></td>
-						<td>:</td>
-						<td><input type='text' name='harga' class='w3-input' id='harga' value='$p[harga]'>
-						</td>
-					</tr>
-					<tr>
-						<td><label class='w3-label'>DISC</label></td>
+						<td><label class='w3-label'>DISC (Dalam %)</label></td>
 						<td>:</td>
 						<td><input type='text' name='disc' class='w3-input' value='$p[disc]'>
 						</td>
@@ -465,6 +478,71 @@
 						<td><label class='w3-label'>QTY</label></td>
 						<td>:</td>
 						<td><input type='text' name='qty' class='w3-input' value='$p[qty]'>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td align='right'><button type='submit' name='submit' value='simpan' class='w3-btn'><i class='fa fa-save'></i> Simpan Data</button>&nbsp;
+
+						<button type='button' class='w3-btn w3-orange' onclick='history.back()'><i class='fa fa-rotate-left'></i> Kembali</button></td>
+					</tr>
+				</table>
+					
+
+			</form>";
+			?>
+				<script type="text/javascript">
+					$(function()
+					{
+						$(".dp").datepicker({
+							dateFormat : "yy-mm-dd",
+							showAnim : "fold"
+						});
+					});
+				</script>
+			<?php
+		break;
+
+		case 'edit_tambah_data_jual':
+
+			echo"<div class='w3-container w3-small w3-pale-green w3-leftbar w3-border-green'>
+				<h4 style='margin-bottom:0;padding-bottom:0;'>Form Edit Penjualan</h4>
+				<p style='margin-top:0;padding-top:0;'><i>Form Edit Item Penjualan</i></p>
+			</div>";
+
+				$sql = mysql_query("SELECT a.*
+									FROM tb_detail_penjualan a 
+									WHERE a.no_transaksi = '$_GET[nt]'") or die(mysql_error());
+				$p = mysql_fetch_assoc($sql);
+			echo"<form class='w3-small' method='POST' action='$aksi?mod=penjualan&act=update_tambah_data_jual'>
+				
+				<input type='hidden' name='no_transaksi' class='w3-input' value='$p[no_transaksi]'>
+				<table>
+				
+
+					<tr>
+						<td width='220px'><label class='w3-label'>Kode Barang :</label></td>
+						<td width='10px'>:</td>
+						<td>
+						<input type='text' name='kode_barang' id='kode_barang' class='w3-input' placeholder='ketik Nama Barang ...' >
+						
+						</td>
+					</tr>
+					
+					<tr>
+						<td><label class='w3-label'>DISC (Dalam %)</label></td>
+						<td>:</td>
+						<td><input type='text' name='disc' class='w3-input'>
+						</td>
+					</tr>
+
+					
+					<tr>
+						<td><label class='w3-label'>QTY</label></td>
+						<td>:</td>
+						<td><input type='text' name='qty' class='w3-input'>
 						</td>
 					</tr>
 					
@@ -768,17 +846,22 @@
 			$tags = array();
 			while($t = mysql_fetch_assoc($sqlTags))
 			{
-				$tags[] = '{label : "'.$t['nama_barang'].'", value : "'.$t['kode_barang'].'"}';
+				$tags[] = '{label : "'.$t['nama_barang']." Rp.".$t['harga_jual'].'", value : "'.$t['kode_barang'].'"}';
 			}
 		?>
+   
 		var availableTags = [<?php echo implode(", \n\t\t\t", $tags); ?>];
 	    $( "#kode_barang" ).autocomplete({
 	    	source: availableTags,
 	    	select:function(event, ui) {
-	    		$("#harga").focus();
+	    		$("#qty").focus();
 	    		console.log(ui.item.label);
 	    	}
 	    });
+
+		function changeValue(x){  
+		document.getElementById('harga').value = prdName[x].kode_barang;   
+		}; 
 
 
 		
