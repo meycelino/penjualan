@@ -246,12 +246,16 @@
 		}
 	
 	mysql_query("UPDATE tb_penjualan SET kode_pelanggan = '$kode_pel',
-				nama_pelanggan = '$nama_pelanggan'
+				nama_pelanggan = '$nama_pelanggan',
+				bayar = '$_POST[jmlbayar]',
+				status = '$_POST[status]',
+				tgl_transaksi = '$_POST[tgl_transaksi]',
+				potongan = '$_POST[potongan]'
 				WHERE no_transaksi = '$_POST[no_transaksi]'") or die(mysql_error());
 
-	echo"<script>
-		window.history.back();
-	</script>";	
+	echo"<script type='text/JavaScript'>
+	location.replace('../../med.php?mod=penjualan&act=list');
+	</script>";
 	}
 
 	elseif ($mod == "penjualan" AND $act == "hapus") {

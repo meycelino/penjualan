@@ -275,7 +275,7 @@
 							<input type='text' name='nama' id='nama' class='w3-input w3-tiny w3-border-0' required>
 
 							<label class='w3-label w3-text-black'>Bayar (Rp):</label>
-							<input type='text' name='jmlbayar' id='bayar' class='w3-input w3-tiny w3-border-0' required>
+							<input type='text' name='jmlbayar' id='bayar' class='w3-input' required>
 
 							
 							<label class='w3-label w3-text-black'>Status Pembayaran:</label>
@@ -588,7 +588,41 @@
 					<tr>
 						<td width='220px'><label class='w3-label'>Nama Pelanggan :</label></td>
 						<td width='10px'>:</td>
-						<td><input type='text' name='nama' id='nama' class='w3-input' placeholder='ketik Nama Pelanggan ...' >
+						<td><input type='text' name='nama' id='nama' class='w3-input' value='$p[kode_pelanggan]' placeholder='ketik Nama Pelanggan ...' >
+						</td>
+					</tr>
+
+					<tr>
+						<td width='220px'><label class='w3-label w3-text-black'>Bayar (Rp):</label>
+						<td width='10px'>:</td>
+						<td><input type='text' name='jmlbayar' class='w3-input' value='$p[bayar]' required>
+						</td>
+					</tr>
+
+					<tr>
+						<td width='220px'><label class='w3-label w3-text-black'>Status Pembayaran:</label></td>
+						<td width='10px'>:</td>
+						<td>
+							<select name='status' class='w3-select'>
+								<option value='$p[status]'>$p[status]</option>
+								<option value='' disabled>Pilih Staus</option>
+								<option value='LUNAS'>LUNAS</option>
+								<option value='HUTANG'>HUTANG</option>
+							</select>
+						</td>
+					</tr>
+
+					<tr>
+						<td width='220px'><label class='w3-label w3-text-black'>Tanggal Transaksi:</label>
+						<td width='10px'>:</td>
+						<td><input type='date' name='tgl_transaksi' id='tgl_transaksi' value='$p[tgl_transaksi]' class='w3-input' required>
+						</td>
+					</tr>
+
+					<tr>
+						<td width='220px'><label class='w3-label w3-text-black'>Potongan  (Rp):</label>
+						<td width='10px'>:</td>
+						<td><input type='number' name='potongan' id='potongan' value='$p[potongan]' class='w3-input' required>
 						</td>
 					</tr>
 
@@ -673,6 +707,7 @@
 						<th>PETUGAS</th>
 						<th>TOTAL</th>
 						<th>POTONGAN</th>
+						<th>BAYAR</th>
 						<th>STATUS</th>
 						<th>#</th>
 					</tr>
@@ -720,10 +755,11 @@
 							<td><a class='w3-text-blue w3-hover-text-red' href='med.php?mod=penjualan&act=printout&id=$m[no_transaksi]'>$m[no_transaksi]</a></td>
 							<td>$m[kode_pelanggan]</td>
 							<td>$m[nama_pelanggan]</td>
-							<td>$m[timestmp]</td>
+							<td>".tglindo($m['tgl_transaksi'])."</td>
 							<td>".nama_petugas($m['petugas'])."</td>
 							<td>".total_penjualan($m['no_transaksi'])."</td>
 							<td>Rp. ".number_format($m['potongan'])."</td>
+							<td>Rp. ".number_format($m['bayar'])."</td>
 							<td>$m[status]</td>
 							<td>
 							<a href='med.php?mod=penjualan&act=editdatajual&id=$m[no_transaksi]'><i class='fa fa-pencil-square w3-large w3-text-blue'></i></a> 
